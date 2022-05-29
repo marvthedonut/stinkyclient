@@ -2,13 +2,14 @@ package com.xlfrie.stinkyclient;
 
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.client.main.GameConfig;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraft.client.gui.screens.VideoSettingsScreen;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -20,6 +21,9 @@ public class stinkyclient
     // Directly reference a slf4j logger
     private static final Logger LOGGER = LogUtils.getLogger();
     boolean flightOn = false;
+    boolean toggleSprintOn = false;
+
+
 
     public stinkyclient()
     {
@@ -32,14 +36,17 @@ public class stinkyclient
     private void setup(final FMLCommonSetupEvent event)
     {
         // some preinit code
-        LOGGER.info("Initializing Stinky Client!");
         keyInit.init();
+
     }
 
     boolean flightKeyBoolDown = false;
+    boolean togglesprintkeyBoolDown = false;
+
+
 
     @SubscribeEvent
-    public void flightKeyMap(ClientTickEvent event)
+    public void keyMap(ClientTickEvent event)
     {
         if (flightKeyBoolDown != keyInit._KeyMapping.isDown())
         {
@@ -51,21 +58,22 @@ public class stinkyclient
                 Minecraft.getInstance().player.getAbilities().mayfly = flightOn;
             }
         }
+        if (togglesprintkeyBoolDown != keyInit.KeyMappingT.isDown())
+        {
+            togglesprintkeyBoolDown = keyInit.KeyMappingT.isDown();
+            if (!keyInit.KeyMappingT.isDown())
+            {
+                toggleSprintOn = !toggleSprintOn;
+            }
+        }
     }
-
 
     @SubscribeEvent
     public void autoSprint(PlayerTickEvent event)
     {
-        event.player.setSprinting(true);
-    }
-
-    @SubscribeEvent
-    public void  noFall(LivingFallEvent event)
-    {
-        if (event.getEntity() instanceof Player)
+        if (toggleSprintOn)
         {
-            event.setCanceled(true);
+            event.player.setSprinting(true);
         }
     }
 

@@ -10,10 +10,12 @@ public final class keyInit
 
     }
     public static KeyMapping _KeyMapping;
+    public static KeyMapping KeyMappingT;
 
     public static void init()
     {
         _KeyMapping = registerKey("flight", KeyMapping.CATEGORY_MOVEMENT, InputConstants.KEY_B);
+        KeyMappingT = registerKey("togglesprint", KeyMapping.CATEGORY_MOVEMENT, InputConstants.KEY_V);
     }
 
     private static KeyMapping registerKey(String name, String category, int keycode)
